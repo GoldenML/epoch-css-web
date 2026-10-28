@@ -1,21 +1,34 @@
-/*
- * @Author: GoldenML wayy180304@gmail.com
- * @Date: 2026-10-14 17:57:58
- * @LastEditors: GoldenML wayy180304@gmail.com
- * @LastEditTime: 2026-10-14 18:00:12
- * @Description:
- * @FilePath: \resource-website\src\App.tsx
- */
 import { RouterProvider } from "react-router-dom";
-import "./App.css";
+import { ConfigProvider, theme } from "antd";
 import router from "./router";
+import zhCN from "antd/locale/zh_CN";
+import { useThemeStore } from "./store/useThemeStore";
+import { useEffect } from "react";
 
-function App() {
+export default function App() {
+  const { isDark } = useThemeStore();
+
+  // 动态给 body 加上或移除 'dark' 类名，驱动 CSS 变量
+  useEffect(() => {
+    if (isDark) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [isDark]);
+
   return (
-    <>
-      <RouterProvider router={router}></RouterProvider>
-    </>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          colorPrimary: "#8b5cf6",
+          borderRadius: 8,
+        },
+      }}
+    >
+      <RouterProvider router={router} />
+    </ConfigProvider>
   );
 }
-
-export default App;
